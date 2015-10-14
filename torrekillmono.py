@@ -17,13 +17,28 @@ puntos.magnitud = 40
 pilas.actores.Sonido()
 
 # Variables y Constantes
-balas_simples = pilas.actores.Bala
+#balas_simples = pilas.actores.Bala
 monos = []
 
 # Funciones
-def mono_destruido():
-    pass
+def mono_destruido(enemigo,disparo):
+    disparo.eliminar()
+    enemigo.eliminar()
+    puntos.aumentar()
+    puntos.escala=[0,1,3,1]
 
+    
+
+
+class MiMunicion(pilasengine.actores.Actor):
+    def iniciar(self):
+        self.imagen = "disparos/bola_amarilla.png"
+    
+    def actualizar(self):
+        self.escala += 10
+
+
+pilas.actores.vincular(MiMunicion)
 
 def crear_mono():
     # Crear un enemigo nuevo
@@ -70,11 +85,24 @@ def crear_mono():
 
 # Añadir la torreta del jugador
 
-torreta = pilas.actores.Torreta(enemigos=monos, cuando_elimina_enemigo=mono_destruido)
+    
+    
 
-pilas.tareas.agregar(1, crear_mono)
+
+torreta = pilas.actores.Torreta(enemigos=monos,municion_bala_simple="bala", cuando_elimina_enemigo=mono_destruido)
+
+agregar_monos = pilas.tareas.agregar(1, crear_mono)
 #pilas.mundo.agregar_tarea(1, crear_mono) <-- sintaxis vieja
 
+def terminar_juego(torreta,enemigos):
+    global fin_de_juego
+    agregar_monos.terminar()
+    torreta.eliminar()
+    texto=pilas.actores.Texto("conseguiste %d puntos"%(puntos.obtener()))
+    texto.y=-150
+    texto.definir_color(pilas.colores.rojo)
+    texto2=pilas.actores.Texto("Fin del Juego")
+pilas.colisiones.agregar(torreta,monos,terminar_juego)
 
-# Arrancar el juego
+
 pilas.ejecutar()
