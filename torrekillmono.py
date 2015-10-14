@@ -102,6 +102,7 @@ def terminar_juego(torreta,enemigos):
     texto.y=-150
     texto.definir_color(pilas.colores.rojo)
     texto2=pilas.actores.Texto("Fin del Juego")
+    texto2.escala = 3
 pilas.colisiones.agregar(torreta,monos,terminar_juego)
 
 
